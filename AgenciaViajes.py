@@ -1,18 +1,23 @@
-def cantidad_destinos(cantidad, cantidad_clientes, cantidad_viajes):
-    if (cantidad <= cantidad_clientes):
-        return True
-    else:
-        cantidad_viajes = cantidad_viajes + 1
-        return cantidad_viajes
+def sumar_destinos(clientes, lista_clientes, indice=0):
+    if indice >= len(lista_clientes):
+        return 0
+    carnet = lista_clientes[indice]
+    cantidad = clientes[carnet]['cantidad_destinos']
+    return cantidad + sumar_destinos(clientes, lista_clientes, indice + 1)
 
-
-def cliente_destinos_mas(clientes, lista_clientes, indice=0, cliente_mayor='', maximos_destinos=0):
+def cliente_destinos(clientes, lista_clientes, indice=0, cliente_mayor='', maximos_destinos=0):
     if indice >= len(lista_clientes):
         return cliente_mayor, maximos_destinos
-
+    else:
+        carnet = lista_clientes[indice]
+        destinos_actuales = len(clientes[carnet]['destinos'])
+        if destinos_actuales > maximos_destinos:
+            cliente_mayor = carnet
+            maximos_destinos = destinos_actuales
+        return cliente_destinos(clientes, lista_clientes, indice + 1, cliente_mayor, maximos_destinos)
 
 clientes = {}
-cantidad_viajes = 0
+cantidad_viajes = 1
 opcion = 0
 while opcion != 3:
     print("=== Agencia de viajes ===")
@@ -26,28 +31,24 @@ while opcion != 3:
         continue
 
     if opcion == 1:
-        cantidad_viajes = 0
+        cantidad_viajes = 1
         print("=== Registrar clientes ===")
         cantidad = int(input("¿Cuántos clientes desea ingresar?: "))
-        cantidad_clientes = cantidad
         for a in range(cantidad):
             print(f"\ncliente #{a + 1}")
             carnet = input("Ingrese el código del cliente: ")
             nombre = input("Ingrese el nombre del cliente: ")
 
+            numero_destinos = int(input("¿Cuántos destinos desea registrar?: "))
             clientes[carnet] = {
                 'nombre': nombre,
-                'destinos': {}
+                'destinos': {},
+                'cantidad_destinos': numero_destinos
             }
 
-            numero_destinos = int(input("¿Cuántos destinos desea registrar?: "))
-            cantidad_destino = numero_destinos
             for b in range(numero_destinos):
                 nombre_destino = input(f"Destino {b + 1}: ")
                 clientes[carnet]['destinos'][nombre_destino] = {}
-                cantidad_viajes = cantidad_destinos(numero_destinos, cantidad_clientes, cantidad_viajes)
-
-
 
     elif opcion == 2:
         print("=== LISTADO DE CLIENTES Y DESTINOS VISITADOS ===")
@@ -58,9 +59,11 @@ while opcion != 3:
                 print(f"Destinos: {destino}")
 
         print("=== DESTINOS VISITADOS ===")
-        print(f"Total de destinos registrados entre todos los clientes: {cantidad_viajes}")
+        lista_clientes = list(clientes.keys())
+        total_destinos = sumar_destinos(clientes, lista_clientes)
+        print(f"Total de destinos registrados entre todos los clientes: {total_destinos}")
 
         lista_clientes = list(clientes.keys())
         if lista_clientes:
-            cliente_mayor, total_destinos = cliente_destinos_mas(clientes, lista_clientes)
+            cliente_mayor, total_destinos = cliente_destinos(clientes, lista_clientes)
             print(f"Cliente con más destinos: {clientes[cliente_mayor]['nombre']} ({total_destinos} visitados)")
