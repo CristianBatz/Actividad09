@@ -56,7 +56,7 @@ while opcion != 3:
             print(f"\ncliente #{carnet}")
             print(f"Nombre: {cliente['nombre']}")
             for destino, destinos in cliente['destinos'].items():
-                print(f"Destinos: {destino}")
+                print(f"Destino: {destino}")
 
         print("=== DESTINOS VISITADOS ===")
         lista_clientes = list(clientes.keys())
