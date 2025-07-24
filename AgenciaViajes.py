@@ -33,9 +33,18 @@ while opcion != 3:
     if opcion == 1:
         cantidad_viajes = 1
         print("=== Registrar clientes ===")
-        cantidad = int(input("¿Cuántos clientes desea ingresar?: "))
+        try:
+            cantidad = int(input("¿Cuántos clientes desea ingresar?: "))
+            if cantidad <= 0:
+                print("Debe ingresar al menos 1 cliente.")
+            else:
+                break
+        except ValueError:
+            print("error ha ingresado un numero incorrecto.")
+            continue
         for a in range(cantidad):
             print(f"\ncliente #{a + 1}")
+
             carnet = input("Ingrese el código del cliente: ")
             nombre = input("Ingrese el nombre del cliente: ")
 
